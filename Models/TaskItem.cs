@@ -25,7 +25,6 @@ public class TaskItem
 
     public DateTime? UpdatedAt { get; set; }
 
-    // Navigation properties
     public Users User { get; set; } = null!;
 
     public Category? Category { get; set; }

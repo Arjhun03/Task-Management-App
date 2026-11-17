@@ -49,11 +49,9 @@ public class ApplicationDbContext : DbContext
             entity.Property(u => u.CreatedAt)
                 .IsRequired();
 
-            // Unique Email
             entity.HasIndex(u => u.Email)
                 .IsUnique();
         });
-
 
         // =========================================
         // TASKS
@@ -92,28 +90,17 @@ public class ApplicationDbContext : DbContext
 
             entity.Property(t => t.UpdatedAt);
 
-
-            // =====================================
-            // TASK -> USERS
-            // =====================================
-
+            // TASK -> USER
             entity.HasOne(t => t.User)
                 .WithMany(u => u.Tasks)
                 .HasForeignKey(t => t.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-            // =====================================
             // TASK -> CATEGORY
-            // =====================================
-
             entity.HasOne(t => t.Category)
                 .WithMany(c => c.Tasks)
                 .HasForeignKey(t => t.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-
-            // Indexes
 
             entity.HasIndex(t => t.UserId);
 
@@ -129,7 +116,6 @@ public class ApplicationDbContext : DbContext
                 t.DueDate
             });
         });
-
 
         // =========================================
         // CATEGORIES
@@ -154,20 +140,15 @@ public class ApplicationDbContext : DbContext
             entity.Property(c => c.CreatedAt)
                 .IsRequired();
 
-
-            // =====================================
-            // CATEGORY -> USERS
-            // =====================================
-
-            // NoAction prevents SQL Server
-            // multiple cascade path error.
+            // CATEGORY -> USER
+            //
+            // NoAction prevents SQL Server's
+            // multiple cascade path problem.
+            //
             entity.HasOne(c => c.Users)
                 .WithMany(u => u.Categories)
                 .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
-
-
-            // Unique category name per user
 
             entity.HasIndex(c => new
             {

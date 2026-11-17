@@ -15,5 +15,4 @@ public class Category
     public Users Users { get; set; } = null!;
 
     public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
-
 }

@@ -1,30 +1,39 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagement.Api.DTOs.Tasks;
+using TaskManagement.Api.Enums;
 using TaskManagement.Api.Services;
+using TaskStatus = TaskManagement.Api.Enums.TaskStatus;
 
 namespace TaskManagement.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
-    private readonly ICurrentUserService _currentUserService;
-
-    public TasksController(
-        ITaskService taskService,
-        ICurrentUserService currentUserService)
-    {
-        _taskService = taskService;
-        _currentUserService = currentUserService;
-    }
-
 
     // =========================================
-    // CREATE TASK
-    // POST: /api/tasks
+    // TEMPORARY DEVELOPMENT USER
+    // =========================================
+    //
+    // Developer 2 will later provide the actual
+    // authenticated user ID through
+    // ICurrentUserService.
+    //
+    // DO NOT keep this in the final version.
+    // =========================================
+
+    private const int DevelopmentUserId = 1;
+
+    public TasksController(
+        ITaskService taskService)
+    {
+        _taskService = taskService;
+    }
+
+    // =========================================
+    // CREATE
+    // POST /api/tasks
     // =========================================
 
     [HttpPost]
@@ -33,10 +42,8 @@ public class TasksController : ControllerBase
     {
         try
         {
-            int userId = _currentUserService.UserId;
-
             var task = await _taskService.CreateTaskAsync(
-                userId,
+                DevelopmentUserId,
                 request);
 
             return CreatedAtAction(
@@ -53,36 +60,69 @@ public class TasksController : ControllerBase
         }
     }
 
-
     // =========================================
-    // GET ALL TASKS
-    // GET: /api/tasks
+    // LIST / SEARCH / FILTER / SORT
+    //
+    // GET /api/tasks
+    //
+    // Examples:
+    //
+    // /api/tasks
+    // /api/tasks?search=angular
+    // /api/tasks?status=Pending
+    // /api/tasks?priority=High
+    // /api/tasks?categoryId=1
+    // /api/tasks?due=overdue
+    // /api/tasks?due=upcoming
+    // /api/tasks?due=none
+    // /api/tasks?sortBy=dueDate&sortOrder=asc
+    //
     // =========================================
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<TaskResponse>>> GetTasks()
+    public async Task<ActionResult<List<TaskResponse>>> GetTasks(
+        [FromQuery] string? search,
+        [FromQuery] TaskStatus? status,
+        [FromQuery] TaskPriority? priority,
+        [FromQuery] int? categoryId,
+        [FromQuery] string? due,
+        [FromQuery] string? sortBy,
+        [FromQuery] string? sortOrder)
     {
-        int userId = _currentUserService.UserId;
+        try
+        {
+            var tasks = await _taskService.DiscoverTasksAsync(
+                DevelopmentUserId,
+                search,
+                status,
+                priority,
+                categoryId,
+                due,
+                sortBy,
+                sortOrder);
 
-        var tasks = await _taskService.GetTasksAsync(userId);
-
-        return Ok(tasks);
+            return Ok(tasks);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new
+            {
+                message = ex.Message
+            });
+        }
     }
 
-
     // =========================================
-    // GET TASK BY ID
-    // GET: /api/tasks/{id}
+    // GET BY ID
+    // GET /api/tasks/{id}
     // =========================================
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TaskResponse>> GetTaskById(
         int id)
     {
-        int userId = _currentUserService.UserId;
-
         var task = await _taskService.GetTaskByIdAsync(
-            userId,
+            DevelopmentUserId,
             id);
 
         if (task == null)
@@ -96,10 +136,9 @@ public class TasksController : ControllerBase
         return Ok(task);
     }
 
-
     // =========================================
-    // UPDATE TASK
-    // PUT: /api/tasks/{id}
+    // UPDATE
+    // PUT /api/tasks/{id}
     // =========================================
 
     [HttpPut("{id:int}")]
@@ -109,10 +148,8 @@ public class TasksController : ControllerBase
     {
         try
         {
-            int userId = _currentUserService.UserId;
-
             var task = await _taskService.UpdateTaskAsync(
-                userId,
+                DevelopmentUserId,
                 id,
                 request);
 
@@ -135,25 +172,22 @@ public class TasksController : ControllerBase
         }
     }
 
-
     // =========================================
-    // UPDATE TASK STATUS
-    // PATCH: /api/tasks/{id}/status
+    // UPDATE STATUS ONLY
+    // PATCH /api/tasks/{id}/status
     // =========================================
 
     [HttpPatch("{id:int}/status")]
-    public async Task<ActionResult> UpdateTaskStatus(
+    public async Task<ActionResult<TaskResponse>> UpdateTaskStatus(
         int id,
         [FromBody] UpdateTaskStatusRequest request)
     {
-        int userId = _currentUserService.UserId;
-
-        bool updated = await _taskService.UpdateTaskStatusAsync(
-            userId,
+        var task = await _taskService.UpdateTaskStatusAsync(
+            DevelopmentUserId,
             id,
-            request);
+            request.Status);
 
-        if (!updated)
+        if (task == null)
         {
             return NotFound(new
             {
@@ -161,26 +195,20 @@ public class TasksController : ControllerBase
             });
         }
 
-        return Ok(new
-        {
-            message = "Task status updated successfully."
-        });
+        return Ok(task);
     }
 
-
     // =========================================
-    // DELETE TASK
-    // DELETE: /api/tasks/{id}
+    // DELETE
+    // DELETE /api/tasks/{id}
     // =========================================
 
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeleteTask(
+    public async Task<IActionResult> DeleteTask(
         int id)
     {
-        int userId = _currentUserService.UserId;
-
         bool deleted = await _taskService.DeleteTaskAsync(
-            userId,
+            DevelopmentUserId,
             id);
 
         if (!deleted)
@@ -191,9 +219,6 @@ public class TasksController : ControllerBase
             });
         }
 
-        return Ok(new
-        {
-            message = "Task deleted successfully."
-        });
+        return NoContent();
     }
 }

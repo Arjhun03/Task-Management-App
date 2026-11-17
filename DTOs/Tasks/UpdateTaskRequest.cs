@@ -9,9 +9,9 @@ public class UpdateTaskRequest
 
     public string? Description { get; set; }
 
-    public TaskPriority Priority { get; set; }
-
     public TaskStatus Status { get; set; }
+
+    public TaskPriority Priority { get; set; }
 
     public DateTime? DueDate { get; set; }
 

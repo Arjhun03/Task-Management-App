@@ -4,16 +4,25 @@ using TaskManagement.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// =========================================
+// SERVICES
+// =========================================
+
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
+builder.Services.AddDbContext<ApplicationDbContext>(
+    options =>
+        options.UseSqlServer(
+            builder.Configuration.GetConnectionString(
+                "DefaultConnection")));
 
 builder.Services.AddScoped<ITaskService, TaskService>();
 
 builder.Services.AddOpenApi();
+
+// =========================================
+// APPLICATION
+// =========================================
 
 var app = builder.Build();
 
