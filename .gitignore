@@ -4,3 +4,7 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 appsettings.json/
+# Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/

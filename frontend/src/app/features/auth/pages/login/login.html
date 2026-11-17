@@ -1,0 +1,113 @@
+<div class="login-page">
+
+  <div class="login-container">
+
+    <!-- Branding -->
+    <div class="brand">
+      <div class="brand-icon">T</div>
+      <span>TaskFlow</span>
+    </div>
+
+    <!-- Login Card -->
+    <div class="login-card">
+
+      <div class="login-heading">
+        <h1>Welcome back!</h1>
+        <p>Sign in to continue managing your tasks.</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <div class="form-group">
+          <label for="email">Email address</label>
+
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            formControlName="email"
+          />
+
+          @if (loginForm.controls.email.touched &&
+          loginForm.controls.email.hasError('required')) {
+            <small class="error">Email is required.</small>
+          }
+
+          @if (loginForm.controls.email.touched &&
+          loginForm.controls.email.hasError('email')) {
+            <small class="error">Enter a valid email address.</small>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <a href="#" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <div class="password-wrapper">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              placeholder="Enter your password"
+              formControlName="password"
+            />
+
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePassword()"
+            >
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+
+          @if (loginForm.controls.password.touched &&
+          loginForm.controls.password.hasError('required')) {
+            <small class="error">Password is required.</small>
+          }
+        </div>
+
+        <!-- Remember Me -->
+        <div class="remember-row">
+          <label class="remember-label">
+            <input
+              type="checkbox"
+              formControlName="rememberMe"
+            />
+            Remember me
+          </label>
+        </div>
+        @if (loginError()) {
+          <div class="error-message">
+            {{ loginError() }}
+          </div>
+        }
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="login-button"
+          [disabled]="isLoading()"
+        >
+          {{ isLoading() ? 'Signing in...' : 'Sign in' }}
+        </button>
+
+      </form>
+
+      <!-- Register -->
+      <div class="register-section">
+        Don't have an account?
+        <a routerLink="/register">Create an account</a>
+      </div>
+
+    </div>
+
+    <p class="footer-text">
+      Organize your work. Achieve more.
+    </p>
+
+  </div>
+
+</div>
