@@ -1,4 +1,5 @@
 using TaskManagement.Api.Enums;
+using TaskStatus = TaskManagement.Api.Enums.TaskStatus;
 
 namespace TaskManagement.Api.Models;
 
@@ -12,7 +13,7 @@ public class TaskItem
 
     public string? Description { get; set; }
 
-    public TaskManagement.Api.Enums.TaskStatus Status { get; set; } = TaskManagement.Api.Enums.TaskStatus.Pending;
+    public TaskStatus Status { get; set; } = TaskStatus.Pending;
 
     public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
@@ -24,7 +25,8 @@ public class TaskItem
 
     public DateTime? UpdatedAt { get; set; }
 
-    public Users Users { get; set; } = null!;
+    // Navigation properties
+    public Users User { get; set; } = null!;
 
     public Category? Category { get; set; }
 }

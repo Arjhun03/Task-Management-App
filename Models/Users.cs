@@ -12,8 +12,8 @@ public class Users
 
     public DateTime CreatedAt { get; set; }
 
+    // Navigation properties
     public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
 
     public ICollection<Category> Categories { get; set; } = new List<Category>();
-    
 }
