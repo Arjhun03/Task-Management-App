@@ -12,29 +12,20 @@ public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
 
-    // =========================================
-    // TEMPORARY DEVELOPMENT USER
-    // =========================================
-    //
-    // Developer 2 will later provide the actual
-    // authenticated user ID through
-    // ICurrentUserService.
-    //
-    // DO NOT keep this in the final version.
-    // =========================================
-
+    // Temporary development user.
+    // This will later be replaced by ICurrentUserService
+    // when authentication is integrated.
     private const int DevelopmentUserId = 1;
 
-    public TasksController(
-        ITaskService taskService)
+    public TasksController(ITaskService taskService)
     {
         _taskService = taskService;
     }
 
-    // =========================================
-    // CREATE
-    // POST /api/tasks
-    // =========================================
+    // =========================================================
+    // CREATE TASK
+    // POST: /api/Tasks
+    // =========================================================
 
     [HttpPost]
     public async Task<ActionResult<TaskResponse>> CreateTask(
@@ -60,24 +51,21 @@ public class TasksController : ControllerBase
         }
     }
 
-    // =========================================
-    // LIST / SEARCH / FILTER / SORT
-    //
-    // GET /api/tasks
+    // =========================================================
+    // GET / SEARCH / FILTER / SORT
+    // GET: /api/Tasks
     //
     // Examples:
-    //
-    // /api/tasks
-    // /api/tasks?search=angular
-    // /api/tasks?status=Pending
-    // /api/tasks?priority=High
-    // /api/tasks?categoryId=1
-    // /api/tasks?due=overdue
-    // /api/tasks?due=upcoming
-    // /api/tasks?due=none
-    // /api/tasks?sortBy=dueDate&sortOrder=asc
-    //
-    // =========================================
+    // /api/Tasks
+    // /api/Tasks?search=angular
+    // /api/Tasks?status=Pending
+    // /api/Tasks?priority=High
+    // /api/Tasks?categoryId=1
+    // /api/Tasks?due=overdue
+    // /api/Tasks?due=upcoming
+    // /api/Tasks?due=none
+    // /api/Tasks?sortBy=dueDate&sortOrder=asc
+    // =========================================================
 
     [HttpGet]
     public async Task<ActionResult<List<TaskResponse>>> GetTasks(
@@ -112,10 +100,10 @@ public class TasksController : ControllerBase
         }
     }
 
-    // =========================================
-    // GET BY ID
-    // GET /api/tasks/{id}
-    // =========================================
+    // =========================================================
+    // GET TASK BY ID
+    // GET: /api/Tasks/{id}
+    // =========================================================
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<TaskResponse>> GetTaskById(
@@ -136,10 +124,10 @@ public class TasksController : ControllerBase
         return Ok(task);
     }
 
-    // =========================================
-    // UPDATE
-    // PUT /api/tasks/{id}
-    // =========================================
+    // =========================================================
+    // UPDATE TASK
+    // PUT: /api/Tasks/{id}
+    // =========================================================
 
     [HttpPut("{id:int}")]
     public async Task<ActionResult<TaskResponse>> UpdateTask(
@@ -172,10 +160,10 @@ public class TasksController : ControllerBase
         }
     }
 
-    // =========================================
-    // UPDATE STATUS ONLY
-    // PATCH /api/tasks/{id}/status
-    // =========================================
+    // =========================================================
+    // UPDATE TASK STATUS
+    // PATCH: /api/Tasks/{id}/status
+    // =========================================================
 
     [HttpPatch("{id:int}/status")]
     public async Task<ActionResult<TaskResponse>> UpdateTaskStatus(
@@ -198,16 +186,16 @@ public class TasksController : ControllerBase
         return Ok(task);
     }
 
-    // =========================================
-    // DELETE
-    // DELETE /api/tasks/{id}
-    // =========================================
+    // =========================================================
+    // DELETE TASK
+    // DELETE: /api/Tasks/{id}
+    // =========================================================
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTask(
         int id)
     {
-        bool deleted = await _taskService.DeleteTaskAsync(
+        var deleted = await _taskService.DeleteTaskAsync(
             DevelopmentUserId,
             id);
 
