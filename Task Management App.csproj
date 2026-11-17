@@ -20,11 +20,4 @@
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="DTOs\" />
-      <Folder Include="Repository\RepositoryInterface\" />
-      <Folder Include="Services\ServiceInterface\" />
-    </ItemGroup>
-
 </Project>
