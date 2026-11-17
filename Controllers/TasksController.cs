@@ -1,34 +1,27 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagement.Api.DTOs.Tasks;
 using TaskManagement.Api.Enums;
 using TaskManagement.Api.Services;
+using TaskManagement.API.Services;
 using TaskStatus = TaskManagement.Api.Enums.TaskStatus;
 
 namespace TaskManagement.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
-
-    // =========================================
-    // TEMPORARY DEVELOPMENT USER
-    // =========================================
-    //
-    // Developer 2 will later provide the actual
-    // authenticated user ID through
-    // ICurrentUserService.
-    //
-    // DO NOT keep this in the final version.
-    // =========================================
-
-    private const int DevelopmentUserId = 1;
+    private readonly ICurrentUserService _currentUserService;
 
     public TasksController(
-        ITaskService taskService)
+        ITaskService taskService,
+        ICurrentUserService currentUserService)
     {
         _taskService = taskService;
+        _currentUserService = currentUserService;
     }
 
     // =========================================
@@ -43,7 +36,7 @@ public class TasksController : ControllerBase
         try
         {
             var task = await _taskService.CreateTaskAsync(
-                DevelopmentUserId,
+                _currentUserService.UserId,
                 request);
 
             return CreatedAtAction(
@@ -92,7 +85,7 @@ public class TasksController : ControllerBase
         try
         {
             var tasks = await _taskService.DiscoverTasksAsync(
-                DevelopmentUserId,
+                _currentUserService.UserId,
                 search,
                 status,
                 priority,
@@ -122,7 +115,7 @@ public class TasksController : ControllerBase
         int id)
     {
         var task = await _taskService.GetTaskByIdAsync(
-            DevelopmentUserId,
+            _currentUserService.UserId,
             id);
 
         if (task == null)
@@ -149,7 +142,7 @@ public class TasksController : ControllerBase
         try
         {
             var task = await _taskService.UpdateTaskAsync(
-                DevelopmentUserId,
+                _currentUserService.UserId,
                 id,
                 request);
 
@@ -183,7 +176,7 @@ public class TasksController : ControllerBase
         [FromBody] UpdateTaskStatusRequest request)
     {
         var task = await _taskService.UpdateTaskStatusAsync(
-            DevelopmentUserId,
+            _currentUserService.UserId,
             id,
             request.Status);
 
@@ -208,7 +201,7 @@ public class TasksController : ControllerBase
         int id)
     {
         bool deleted = await _taskService.DeleteTaskAsync(
-            DevelopmentUserId,
+            _currentUserService.UserId,
             id);
 
         if (!deleted)
