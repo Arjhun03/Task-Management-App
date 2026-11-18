@@ -47,17 +47,7 @@ export class Login {
 
       next: (response) => {
 
-        // Store JWT token
-        localStorage.setItem('token', response.token);
-
-        // Store user information
-        localStorage.setItem(
-          'user',
-          JSON.stringify(response.user)
-        );
-
-        console.log('Login successful!');
-        console.log('Logged in user:', response.user);
+        this.auth.storeSession(response);
 
         // Navigate to home page
         this.router.navigate(['/home']);
@@ -65,8 +55,6 @@ export class Login {
       },
 
       error: (error) => {
-
-        console.error('Login failed:', error);
 
         this.loginError.set(
           error.error?.message || 'Invalid email or password.'
