@@ -16,13 +16,46 @@ export class Home {
   tasks = signal<TaskItem[]>([]);
   loading = signal(true);
   error = signal('');
-  completed = computed(() => this.tasks().filter(task => task.status === TaskStatus.Completed).length);
-  pending = computed(() => this.tasks().filter(task => task.status === TaskStatus.Pending).length);
-  inProgress = computed(() => this.tasks().filter(task => task.status === TaskStatus.InProgress).length);
-  overdue = computed(() => this.tasks().filter(task => task.status !== TaskStatus.Completed && task.dueDate && new Date(task.dueDate) < new Date()).length);
-  upcoming = computed(() => this.tasks().filter(task => task.status !== TaskStatus.Completed && task.dueDate && new Date(task.dueDate) >= new Date()).sort((a, b) => a.dueDate!.localeCompare(b.dueDate!)).slice(0, 5));
+  completed = computed(
+    () => this.tasks().filter((task) => task.status === TaskStatus.Completed).length,
+  );
+  pending = computed(
+    () => this.tasks().filter((task) => task.status === TaskStatus.Pending).length,
+  );
+  inProgress = computed(
+    () => this.tasks().filter((task) => task.status === TaskStatus.InProgress).length,
+  );
+  overdue = computed(
+    () =>
+      this.tasks().filter(
+        (task) =>
+          task.status !== TaskStatus.Completed &&
+          task.dueDate &&
+          new Date(task.dueDate) < new Date(),
+      ).length,
+  );
+  upcoming = computed(() =>
+    this.tasks()
+      .filter(
+        (task) =>
+          task.status !== TaskStatus.Completed &&
+          task.dueDate &&
+          new Date(task.dueDate) >= new Date(),
+      )
+      .sort((a, b) => a.dueDate!.localeCompare(b.dueDate!))
+      .slice(0, 5),
+  );
 
-  constructor() { this.tasksApi.getAll().subscribe({ next: tasks => this.tasks.set(tasks), error: () => { this.error.set('Could not load dashboard tasks.'); this.loading.set(false); }, complete: () => this.loading.set(false) }); }
+  constructor() {
+    this.tasksApi.getAll().subscribe({
+      next: (tasks) => this.tasks.set(tasks),
+      error: () => {
+        this.error.set('Could not load dashboard tasks.');
+        this.loading.set(false);
+      },
+      complete: () => this.loading.set(false),
+    });
+  }
 
   logout(): void {
     this.auth.logout();

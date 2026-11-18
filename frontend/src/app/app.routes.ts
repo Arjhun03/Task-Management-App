@@ -6,12 +6,18 @@ import { authGuard, guestGuard } from './core/guards/auth.guard';
 import { AppLayout } from './shared/components/app-layout/app-layout';
 import { Categories } from './features/categories/pages/categories/categories';
 import { Tasks } from './features/tasks/pages/tasks/tasks';
+import { Register } from './features/auth/pages/register/register';
 
 export const routes: Routes = [
 
   {
     path: 'login',
     component: Login,
+    canActivate: [guestGuard]
+  },
+  {
+    path: 'register',
+    component: Register,
     canActivate: [guestGuard]
   },
 

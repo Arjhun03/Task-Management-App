@@ -1,8 +1,106 @@
-<section class="page"><h1>Tasks</h1><p>{{ completed() }} of {{ tasks().length }} tasks completed</p>
- @if(error()){<p class="error" role="alert">{{error()}}</p>}
- <form class="editor" [formGroup]="form" (ngSubmit)="save()"><h2>{{editing() ? 'Edit task' : 'Create a task'}}</h2><label>Title<input formControlName="title" maxlength="150" required></label><label>Description<textarea formControlName="description"></textarea></label><div class="row"><label>Priority<select formControlName="priority"><option [ngValue]="0">Low</option><option [ngValue]="1">Medium</option><option [ngValue]="2">High</option></select></label>@if(editing()){<label>Status<select formControlName="status"><option [ngValue]="0">Pending</option><option [ngValue]="1">In progress</option><option [ngValue]="2">Completed</option></select></label>}<label>Due date<input type="date" formControlName="dueDate"></label><label>Category<select formControlName="categoryId"><option value="">None</option>@for(c of categories();track c.categoryId){<option [value]="c.categoryId">{{c.name}}</option>}</select></label></div>@if(form.controls.title.touched&&form.controls.title.invalid){<small class="error">Title is required.</small>}<button [disabled]="loading()" type="submit">{{editing()?'Save task':'Add task'}}</button>@if(editing()){<button type="button" class="secondary" (click)="reset()">Cancel</button>}</form>
- <form class="filters" [formGroup]="filters" (ngSubmit)="load()"><input aria-label="Search tasks" placeholder="Search tasks" formControlName="search"><select aria-label="Filter status" formControlName="status"><option value="">All statuses</option><option value="0">Pending</option><option value="1">In progress</option><option value="2">Completed</option></select><select aria-label="Filter priority" formControlName="priority"><option value="">All priorities</option><option value="0">Low</option><option value="1">Medium</option><option value="2">High</option></select><button>Filter</button></form>
- @if(loading()&&!tasks().length){<p>Loading tasks…</p>}@if(!loading()&&!tasks().length){<p class="empty">No tasks match. Create one above.</p>}
- <div class="list">@for(task of tasks();track task.taskId){<article><div class="taskinfo"><h2>{{task.title}}</h2><p>{{task.description || 'No description'}} · {{task.categoryName || 'Uncategorized'}}</p><small>{{priorityName(task.priority)}} priority · {{task.dueDate ? (task.dueDate | date:'mediumDate') : 'No due date'}}</small></div><select [value]="task.status" (change)="setStatus(task,status($any($event.target).value))" aria-label="Task status"><option value="0">Pending</option><option value="1">In progress</option><option value="2">Completed</option></select><button class="secondary" (click)="edit(task)">Edit</button><button class="danger" (click)="remove(task)">Delete</button></article>}</div>
+<section class="page">
+  <h1>Tasks</h1>
+  <p>{{ completed() }} of {{ tasks().length }} tasks completed</p>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+  <form class="editor" [formGroup]="form" (ngSubmit)="save()">
+    <h2>{{ editing() ? 'Edit task' : 'Create a task' }}</h2>
+    <label>Title<input formControlName="title" maxlength="150" required /></label
+    ><label>Description<textarea formControlName="description"></textarea></label>
+    <div class="row">
+      <label
+        >Priority<select formControlName="priority">
+          <option [ngValue]="0">Low</option>
+          <option [ngValue]="1">Medium</option>
+          <option [ngValue]="2">High</option>
+        </select></label
+      >
+      @if (editing()) {
+        <label
+          >Status<select formControlName="status">
+            <option [ngValue]="0">Pending</option>
+            <option [ngValue]="1">In progress</option>
+            <option [ngValue]="2">Completed</option>
+          </select></label
+        >
+      }
+      <label>Due date<input type="date" formControlName="dueDate" /></label
+      ><label
+        >Category<select formControlName="categoryId" required>
+          <option value="">None</option>
+          @for (c of categories(); track c.categoryId) {
+            <option [value]="c.categoryId">{{ c.name }}</option>
+          }
+        </select></label
+      >
+    </div>
+    @if (form.controls.title.touched && form.controls.title.invalid) {
+      <small class="error">Title is required.</small>
+    }
+    @if (form.controls.categoryId.touched) {
+      @if (form.controls.categoryId.hasError('required')) {
+        <small class="error">Category is required.</small>
+      }
+    }
+    <button [disabled]="loading()" type="submit">{{ editing() ? 'Save task' : 'Add task' }}</button>
+    @if (editing()) {
+      <button type="button" class="secondary" (click)="reset()">Cancel</button>
+    }
+  </form>
+  <form class="filters" [formGroup]="filters" (ngSubmit)="load()">
+    <input aria-label="Search tasks" placeholder="Search tasks" formControlName="search" /><select
+      aria-label="Filter status"
+      formControlName="status"
+    >
+      <option value="">All statuses</option>
+      <option value="0">Pending</option>
+      <option value="1">In progress</option>
+      <option value="2">Completed</option></select
+    ><select aria-label="Filter priority" formControlName="priority">
+      <option value="">All priorities</option>
+      <option value="0">Low</option>
+      <option value="1">Medium</option>
+      <option value="2">High</option></select
+    ><button>Filter</button>
+  </form>
+  @if (loading() && !tasks().length) {
+    <p>Loading tasks…</p>
+  }
+  @if (!loading() && !tasks().length) {
+    <p class="empty">No tasks match. Create one above.</p>
+  }
+  <div class="list">
+    @for (task of tasks(); track task.taskId) {
+      <article>
+        <div class="taskinfo">
+          <h2>{{ task.title }}</h2>
+          <p>
+            {{ task.description || 'No description' }} · {{ task.categoryName || 'Uncategorized' }}
+          </p>
+          <small
+            >{{ priorityName(task.priority) }} priority ·
+            {{ task.dueDate ? (task.dueDate | date: 'mediumDate') : 'No due date' }}</small
+          >
+        </div>
+        <select
+          [value]="task.status"
+          (change)="setStatus(task, status($any($event.target).value))"
+          aria-label="Task status"
+        >
+          <option value="0">Pending</option>
+          <option value="1">In progress</option>
+          <option value="2">Completed</option></select
+        ><button class="secondary" (click)="edit(task)">Edit</button
+        ><button class="danger" (click)="remove(task)">Delete</button>
+      </article>
+    }
+  </div>
 </section>
-@if (deleting(); as task) { <app-confirmation-dialog [message]="'Delete “' + task.title + '”?'" (confirmed)="confirmDelete()" (cancelled)="deleting.set(null)" /> }
+@if (deleting(); as task) {
+  <app-confirmation-dialog
+    [message]="'Delete “' + task.title + '”?'"
+    (confirmed)="confirmDelete()"
+    (cancelled)="deleting.set(null)"
+  />
+}

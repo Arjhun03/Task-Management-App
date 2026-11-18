@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 
 import { LoginRequest } from '../../features/auth/models/login-request';
 import { LoginResponse } from '../../features/auth/models/login-response';
+import { RegisterRequest } from '../../features/auth/models/register-request';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -24,6 +25,10 @@ export class Auth {
       credentials
     );
 
+  }
+
+  register(request: RegisterRequest): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/register`, request);
   }
 
   getToken(): string | null {

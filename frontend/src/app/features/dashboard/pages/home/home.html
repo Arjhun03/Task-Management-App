@@ -1,1 +1,39 @@
-<section class="dashboard"><h1>Dashboard</h1><p>Here’s an overview of your work.</p>@if(error()){<p role="alert">{{error()}}</p>}@if(loading()){<p>Loading dashboard…</p>}<div class="stats"><article><span>Total tasks</span><strong>{{tasks().length}}</strong></article><article><span>Completed</span><strong>{{completed()}}</strong></article><article><span>Pending</span><strong>{{pending()}}</strong></article><article><span>In progress</span><strong>{{inProgress()}}</strong></article><article><span>Overdue</span><strong>{{overdue()}}</strong></article></div><section class="upcoming"><h2>Upcoming deadlines</h2>@if(!upcoming().length){<p>No upcoming deadlines.</p>}@for(task of upcoming();track task.taskId){<div class="deadline"><span>{{task.title}}</span><time>{{task.dueDate | date:'mediumDate'}}</time></div>}</section></section>
+<section class="dashboard">
+  <h1>Dashboard</h1>
+  <p>Here’s an overview of your work.</p>
+  @if (error()) {
+    <p role="alert">{{ error() }}</p>
+  }
+  @if (loading()) {
+    <p>Loading dashboard…</p>
+  }
+  <div class="stats">
+    <article>
+      <span>Total tasks</span><strong>{{ tasks().length }}</strong>
+    </article>
+    <article>
+      <span>Completed</span><strong>{{ completed() }}</strong>
+    </article>
+    <article>
+      <span>Pending</span><strong>{{ pending() }}</strong>
+    </article>
+    <article>
+      <span>In progress</span><strong>{{ inProgress() }}</strong>
+    </article>
+    <article>
+      <span>Overdue</span><strong>{{ overdue() }}</strong>
+    </article>
+  </div>
+  <section class="upcoming">
+    <h2>Upcoming deadlines</h2>
+    @if (!upcoming().length) {
+      <p>No upcoming deadlines.</p>
+    }
+    @for (task of upcoming(); track task.taskId) {
+      <div class="deadline">
+        <span>{{ task.title }}</span
+        ><time>{{ task.dueDate | date: 'mediumDate' }}</time>
+      </div>
+    }
+  </section>
+</section>
