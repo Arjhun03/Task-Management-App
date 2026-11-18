@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using TaskManagement.API.Services;
 using TaskManagement.Api.DTOs.Tasks;
 using TaskManagement.Api.Enums;
 using TaskManagement.Api.Services;
@@ -6,20 +8,19 @@ using TaskStatus = TaskManagement.Api.Enums.TaskStatus;
 
 namespace TaskManagement.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class TasksController : ControllerBase
 {
     private readonly ITaskService _taskService;
 
-    // Temporary development user.
-    // This will later be replaced by ICurrentUserService
-    // when authentication is integrated.
-    private const int DevelopmentUserId = 1;
+    private readonly ICurrentUserService _currentUser;
 
-    public TasksController(ITaskService taskService)
+    public TasksController(ITaskService taskService, ICurrentUserService currentUser)
     {
         _taskService = taskService;
+        _currentUser = currentUser;
     }
 
     // =========================================================
@@ -34,7 +35,7 @@ public class TasksController : ControllerBase
         try
         {
             var task = await _taskService.CreateTaskAsync(
-                DevelopmentUserId,
+                _currentUser.UserId,
                 request);
 
             return CreatedAtAction(
@@ -80,7 +81,7 @@ public class TasksController : ControllerBase
         try
         {
             var tasks = await _taskService.DiscoverTasksAsync(
-                DevelopmentUserId,
+                _currentUser.UserId,
                 search,
                 status,
                 priority,
@@ -110,7 +111,7 @@ public class TasksController : ControllerBase
         int id)
     {
         var task = await _taskService.GetTaskByIdAsync(
-            DevelopmentUserId,
+            _currentUser.UserId,
             id);
 
         if (task == null)
@@ -137,7 +138,7 @@ public class TasksController : ControllerBase
         try
         {
             var task = await _taskService.UpdateTaskAsync(
-                DevelopmentUserId,
+                _currentUser.UserId,
                 id,
                 request);
 
@@ -171,7 +172,7 @@ public class TasksController : ControllerBase
         [FromBody] UpdateTaskStatusRequest request)
     {
         var task = await _taskService.UpdateTaskStatusAsync(
-            DevelopmentUserId,
+            _currentUser.UserId,
             id,
             request.Status);
 
@@ -196,7 +197,7 @@ public class TasksController : ControllerBase
         int id)
     {
         var deleted = await _taskService.DeleteTaskAsync(
-            DevelopmentUserId,
+            _currentUser.UserId,
             id);
 
         if (!deleted)

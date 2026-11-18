@@ -1,0 +1,40 @@
+.dashboard {
+  max-width: 1100px;
+  margin: auto;
+  padding: 2rem;
+}
+.dashboard > p {
+  color: #64748b;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+.stats article,
+.upcoming {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.stats span,
+.stats strong {
+  display: block;
+}
+.stats span {
+  color: #64748b;
+}
+.stats strong {
+  font-size: 1.8rem;
+  margin-top: 0.7rem;
+}
+.upcoming {
+  margin-top: 1.5rem;
+}
+.deadline {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-top: 1px solid #e2e8f0;
+}

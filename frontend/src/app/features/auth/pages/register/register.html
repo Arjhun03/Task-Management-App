@@ -1,0 +1,34 @@
+<div class="register-page">
+  <div class="register-container">
+    <div class="brand"><div class="brand-icon">T</div><span>TaskFlow</span></div>
+    <div class="register-card">
+      <div class="register-heading">
+        <h1>Create your account</h1>
+        <p>Get started managing your tasks today.</p>
+      </div>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="fullName">Full name</label>
+          <input id="fullName" type="text" placeholder="Your name" formControlName="fullName" />
+          @if (registerForm.controls.fullName.touched && registerForm.controls.fullName.hasError('required')) { <small class="error">Full name is required.</small> }
+        </div>
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input id="email" type="email" placeholder="you@example.com" formControlName="email" />
+          @if (registerForm.controls.email.touched && registerForm.controls.email.hasError('required')) { <small class="error">Email is required.</small> }
+          @if (registerForm.controls.email.touched && registerForm.controls.email.hasError('email')) { <small class="error">Enter a valid email address.</small> }
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Create a password" formControlName="password" />
+          @if (registerForm.controls.password.touched && registerForm.controls.password.hasError('required')) { <small class="error">Password is required.</small> }
+          @if (registerForm.controls.password.touched && registerForm.controls.password.hasError('minlength')) { <small class="error">Password must be at least 6 characters.</small> }
+        </div>
+        @if (registerError()) { <div class="error-message">{{ registerError() }}</div> }
+        <button class="register-button" type="submit" [disabled]="isLoading()">{{ isLoading() ? 'Creating account...' : 'Create account' }}</button>
+      </form>
+      <div class="login-section">Already have an account? <a routerLink="/login">Sign in</a></div>
+    </div>
+    <p class="footer-text">Organize your work. Achieve more.</p>
+  </div>
+</div>

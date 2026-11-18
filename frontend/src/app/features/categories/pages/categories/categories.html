@@ -1,0 +1,45 @@
+@if (deleting(); as category) {
+  <app-confirmation-dialog
+    [message]="'Delete “' + category.name + '”?'"
+    (confirmed)="confirmDelete()"
+    (cancelled)="deleting.set(null)"
+  />
+}
+<section class="page">
+  <h1>Categories</h1>
+  <p>Organize tasks with categories.</p>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+  <form [formGroup]="form" (ngSubmit)="save()" class="editor">
+    <label>Name <input formControlName="name" maxlength="60" required /></label>
+    <label>Description <input formControlName="description" maxlength="250" /></label>
+    <button type="submit" [disabled]="loading()">
+      {{ editing() === null ? 'Add category' : 'Save changes' }}
+    </button>
+    @if (editing() !== null) {
+      <button type="button" class="secondary" (click)="cancel()">Cancel</button>
+    }
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <small class="error">Name is required (up to 60 characters).</small>
+    }
+  </form>
+  @if (loading() && !categories().length) {
+    <p>Loading categories…</p>
+  }
+  @if (!loading() && !categories().length) {
+    <p class="empty">No categories yet. Add one above.</p>
+  }
+  <div class="list">
+    @for (category of categories(); track category.categoryId) {
+      <article>
+        <div>
+          <h2>{{ category.name }}</h2>
+          <p>{{ category.description || 'No description' }}</p>
+        </div>
+        <button type="button" class="secondary" (click)="edit(category)">Edit</button
+        ><button type="button" class="danger" (click)="remove(category)">Delete</button>
+      </article>
+    }
+  </div>
+</section>
